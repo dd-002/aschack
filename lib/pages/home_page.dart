@@ -52,35 +52,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: Column(
-          children: <Widget>[
-            const Padding(
-              padding: EdgeInsets.all(40.0),
-              child: Center(
-                child: Text("Available QRs",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        fontSize: 30)),
-              ),
+    return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            child: Column(
+              children: <Widget>[
+                const Padding(
+                  padding: EdgeInsets.all(40.0),
+                  child: Center(
+                    child: Text("Available QRs",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                            fontSize: 30)),
+                  ),
+                ),
+                AspectRatio(
+                  aspectRatio: 0.67,
+                  child: PageView.builder(
+                      itemCount: _items.length,
+                      physics: const ClampingScrollPhysics(),
+                      controller: _pageController,
+                      itemBuilder: (context, index) {
+                        return carouselView(index);
+                      }),
+                )
+              ],
             ),
-            AspectRatio(
-              aspectRatio: 0.67,
-              child: PageView.builder(
-                  itemCount: _items.length,
-                  physics: const ClampingScrollPhysics(),
-                  controller: _pageController,
-                  itemBuilder: (context, index) {
-                    return carouselView(index);
-                  }),
-            )
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 
   Widget carouselView(int index) {
