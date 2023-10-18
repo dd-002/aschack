@@ -2,6 +2,29 @@ import 'package:flutter/material.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import './home_page.dart';
+import 'package:http/http.dart' as http;
+
+bool isLoginsuccessful = false;
+
+Future<void> loginUser(String user, String password) async {
+  final response = await http.post(
+      Uri.parse('https://9bd6-103-21-126-76.ngrok.io/user_app/login/'),
+      body: {
+        'user': user,
+        'password': password,
+      });
+
+  if (response.statusCode == 200) {
+    isLoginsuccessful = true;
+    print('Login successful');
+  } else if (response.statusCode == 401) {
+    isLoginsuccessful = false;
+    print('Invalid Credentials');
+  } else {
+    isLoginsuccessful = false;
+    print('User Not Found');
+  }
+}
 
 class LoginPage extends StatelessWidget {
   LoginPage({super.key});
@@ -77,11 +100,24 @@ class LoginPage extends StatelessWidget {
 
               // sign in button
               MyButton(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
+                onTap: () async {
+                  await loginUser(
+                      usernameController.text, passwordController.text);
+                  if (isLoginsuccessful) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                    );
+                  } else {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Invalid username or password.'),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
