@@ -8,7 +8,7 @@ bool isLoginsuccessful = false;
 
 Future<void> loginUser(String user, String password) async {
   final response = await http.post(
-      Uri.parse('https://9bd6-103-21-126-76.ngrok.io/user_app/login/'),
+      Uri.parse('https://7dfc-103-21-126-76.ngrok-free.app/user_app/login/'),
       body: {
         'user': user,
         'password': password,
