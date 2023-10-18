@@ -3,6 +3,7 @@ import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import './home_page.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 bool isLoginsuccessful = false;
 
@@ -16,6 +17,9 @@ Future<void> loginUser(String user, String password) async {
 
   if (response.statusCode == 200) {
     isLoginsuccessful = true;
+    final jsonData = json.decode(response.body);
+    print(jsonData['events']);
+    // TODO
     print('Login successful');
   } else if (response.statusCode == 401) {
     isLoginsuccessful = false;
