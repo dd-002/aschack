@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import './home_page.dart';
@@ -18,8 +19,7 @@ Future<void> loginUser(String user, String password) async {
   if (response.statusCode == 200) {
     isLoginsuccessful = true;
     final jsonData = json.decode(response.body);
-    print(jsonData['events']);
-    // TODO
+    dataEntry(jsonData['events'], jsonData['login_id']);
     print('Login successful');
   } else if (response.statusCode == 401) {
     isLoginsuccessful = false;
@@ -28,6 +28,25 @@ Future<void> loginUser(String user, String password) async {
     isLoginsuccessful = false;
     print('User Not Found');
   }
+}
+
+void dataEntry(Map<String, dynamic> data, String uID) async {
+  final _qrList = Hive.box('qrList');
+  data.forEach((key, value) async {
+    var qq = {"eventName": value[1], "eventID": value[0], "uID": uID};
+    await _qrList.add(qq);
+    print(value[0]);
+  });
+  // const value1 = {"eventName": "MoodI", 'uID': "saca", 'eventID': value};
+  // const value2 = {
+  //   "eventName": "TechFest",
+  //   'uID': "1asca",
+  //   'eventID': '1acca34'
+  // };
+  // const value3 = {"eventName": "E-Summit", 'uID': "acvs", 'eventID': 'accc'};
+  // await _qrList.add(value1);
+  // await _qrList.add(value2);
+  // await _qrList.add(value3);
 }
 
 class LoginPage extends StatelessWidget {
