@@ -30,7 +30,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             child: Text(
               widget.data['eventID'],
               style: const TextStyle(
-                  color: Color.fromARGB(221, 252, 252, 252),
+                  color: Color.fromARGB(221, 255, 255, 255),
                   fontSize: 25,
                   fontWeight: FontWeight.bold),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../components/my_button.dart';
 import '../components/my_textfield.dart';
 import './home_page.dart';
@@ -20,6 +21,7 @@ Future<void> loginUser(String user, String password) async {
     isLoginsuccessful = true;
     final jsonData = json.decode(response.body);
     dataEntry(jsonData['events'], jsonData['login_id']);
+    setUserLoggedIn(true);
     print('Login successful');
   } else if (response.statusCode == 401) {
     isLoginsuccessful = false;
@@ -31,22 +33,17 @@ Future<void> loginUser(String user, String password) async {
 }
 
 void dataEntry(Map<String, dynamic> data, String uID) async {
-  final _qrList = Hive.box('qrList');
+  final qrList = Hive.box('qrList');
   data.forEach((key, value) async {
     var qq = {"eventName": value[1], "eventID": value[0], "uID": uID};
-    await _qrList.add(qq);
+    await qrList.add(qq);
     print(value[0]);
   });
-  // const value1 = {"eventName": "MoodI", 'uID': "saca", 'eventID': value};
-  // const value2 = {
-  //   "eventName": "TechFest",
-  //   'uID': "1asca",
-  //   'eventID': '1acca34'
-  // };
-  // const value3 = {"eventName": "E-Summit", 'uID': "acvs", 'eventID': 'accc'};
-  // await _qrList.add(value1);
-  // await _qrList.add(value2);
-  // await _qrList.add(value3);
+}
+
+Future<void> setUserLoggedIn(bool value) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setBool('loggedIn', value);
 }
 
 class LoginPage extends StatelessWidget {
@@ -127,6 +124,7 @@ class LoginPage extends StatelessWidget {
                   await loginUser(
                       usernameController.text, passwordController.text);
                   if (isLoginsuccessful) {
+                    //remove !
                     // ignore: use_build_context_synchronously
                     Navigator.push(
                       context,

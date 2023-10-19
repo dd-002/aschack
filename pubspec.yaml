@@ -39,6 +39,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   qr_flutter: ^4.1.0
   http: ^1.1.0
+  shared_preferences: ^2.2.2
+  simnumber: ^0.0.12
+  cached_network_image: ^3.3.0
 
 dev_dependencies:
   flutter_test:

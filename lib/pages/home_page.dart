@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import './qr_details.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -28,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
         'eventName': item['eventName']
       };
     }).toList();
-    print([_qrList, 'refresh ran']);
     setState(() {
       _items = data.toList();
     });
@@ -105,7 +105,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget carouselCard(Map<String, dynamic> data) {
-    print(data);
     return Column(
       children: <Widget>[
         Expanded(
@@ -114,37 +113,37 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Hero(
               tag: data['key'].toString(),
               child: GestureDetector(
-                onTap: () async {
-                  List<dynamic> ref = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DetailsScreen(data: data)));
-                  if (ref[0] == 'del') {
-                    print(ref[1]);
-                    await _qrList.delete(ref[1]);
-                    refreshedItems();
-                  }
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: const [
-                          BoxShadow(
-                              offset: Offset(0, 4),
-                              blurRadius: 4,
-                              color: Colors.black26)
-                        ]),
-                    child: Center(
-                      child: QrImageView(
-                        data: data['eventID'],
-                        size: 200,
-                        embeddedImageStyle:
-                            const QrEmbeddedImageStyle(size: Size(100, 100)),
-                        backgroundColor: Color.fromARGB(255, 62, 220, 62),
-                      ),
-                    )),
-              ),
+                  onTap: () async {
+                    List<dynamic> ref = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DetailsScreen(data: data)));
+                    if (ref[0] == 'del') {
+                      await _qrList.delete(ref[1]);
+                      refreshedItems();
+                    }
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl:
+                        'https://media.istockphoto.com/id/1460853312/photo/abstract-connected-dots-and-lines-concept-of-ai-technology-motion-of-digital-data-flow.jpg?s=2048x2048&w=is&k=20&c=7yqKsEDy7_n6bG1jOFFFmYGYDa0MiSjJjYH_JvbxuWs=',
+                    imageBuilder: (context, imageProvider) => Container(
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                          image: DecorationImage(
+                              image: imageProvider, fit: BoxFit.fill),
+                          boxShadow: const [
+                            BoxShadow(
+                                offset: Offset(0, 4),
+                                blurRadius: 4,
+                                color: Colors.black26)
+                          ]),
+                    ),
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                  )),
             ),
           ),
         ),
